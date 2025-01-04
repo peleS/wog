@@ -4,7 +4,7 @@ def generate_number(difficulty):
     return random.randint(0, difficulty)
 
 def get_guess_from_user(difficulty):
-    return int(input(f'Guess a number between 0 and {difficulty}: '))
+    return float(input(f'Guess a number between 0 and {difficulty}: '))
 
 def compare_results(secret_number, user_guess):
     return secret_number == user_guess
