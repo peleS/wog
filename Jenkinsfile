@@ -19,6 +19,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
+                    sudo docker logs world_games
                     for i in {1..15}; do
                         if sudo docker ps -a --format "{{.Names}}" | grep -q "^world_games$"; then
                             sudo docker exec world_games python test/e2e.py
