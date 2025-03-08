@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'sudo python e2e.py'
+                sh 'python e2e.py'
             }
         }
         stage('Finalize') {
