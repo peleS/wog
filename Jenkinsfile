@@ -8,7 +8,6 @@ pipeline {
                     if sudo docker ps -a --format "{{.Names}}" | grep -q "^world_games$"; then
                     sudo docker rm -f world_games
                     fi
-                    sudo docker logs world_games
                     sudo docker ps -a
                     '''
             }
@@ -16,7 +15,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker-compose build'
+                sh '''
+                docker-compose build
+                sudo docker logs world_games
+                '''
+
             }
         }
 
