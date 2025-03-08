@@ -19,6 +19,12 @@ pipeline {
                     }
         }
 
+        stage('Check Docker Compose Version') {
+           steps {
+                   sh 'docker-compose --version'
+                    }
+        }
+
         stage('Check Scores.txt File') {
             steps {
                     sh 'ls -l ./Scores.txt'  // Check if the file is in the workspace
