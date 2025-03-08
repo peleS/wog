@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Run') {
             steps {
-                sh 'sudo docker rm -f world_games || true'
+                sh 'if sudo docker ps -a --format '{{.Names}}' | grep -q "^world_games$"; then sudo docker rm -f world_games fi'
                 sh 'sudo docker run -d -p 8777:8777 --name world_games world_of_games'
             }
         }
