@@ -16,7 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker-compose build
+                docker-compose --verbose build
                 sudo docker logs world_games
                 '''
 
