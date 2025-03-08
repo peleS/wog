@@ -19,6 +19,12 @@ pipeline {
                     }
         }
 
+        stage('Check Scores.txt File') {
+            steps {
+                    sh 'ls -l ./Scores.txt'  // Check if the file is in the workspace
+                    }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh '''
