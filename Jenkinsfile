@@ -11,7 +11,7 @@ pipeline {
         stage('Run Application') {
             steps {
                 sh 'docker-compose up -d app'
-                sleep 8  # Wait for service to start
+                sh 'sleep 8'
             }
         }
 
