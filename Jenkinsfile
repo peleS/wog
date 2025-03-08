@@ -19,11 +19,19 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    # Option 1: Run test in a new container with network access to the running app
+                    for i in {1..15}; do
+                        if sudo docker ps -a --format "{{.Names}}" | grep -q "^world_games$"; then
+                            sudo docker exec world_games python test/e2e.py
+                            break
+                        else
+                            echo "Attempt $i: Container world_games is not running. Retrying..."
+                            sleep 1
+                        fi
+                    done
+
+                    # Option 2: Run test in a new container with network access to the running app
                     # sudo docker run --network=host world_of_games python test/e2e.py
 
-                    # OR Option 2: Exec into the running container to run the test
-                    sudo docker exec world_games python test/e2e.py
                 '''
             }
         }
