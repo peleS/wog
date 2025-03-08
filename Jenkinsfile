@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+        stage('Cleanup Old Containers') {
+            steps {
+                sh 'docker-compose down --remove-orphans'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh 'docker-compose build'
