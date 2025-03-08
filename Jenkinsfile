@@ -21,7 +21,10 @@ pipeline {
 
         stage('Check Docker Compose Version') {
            steps {
-                   sh 'docker-compose --version'
+                   sh '''
+                   docker-compose --version
+                   which docker-compose || echo "docker-compose not found"
+                   '''
                     }
         }
 
