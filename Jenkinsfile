@@ -4,7 +4,13 @@ pipeline {
     stages {
         stage('Cleanup Old Containers') {
             steps {
-                sh 'docker-compose down --remove-orphans'
+                    sh '''
+                    if sudo docker ps -a --format "{{.Names}}" | grep -q "^world_games$"; then
+                    sudo docker rm -f world_games
+                    fi
+                    sudo docker logs world_games
+                    sudo docker ps -a
+                    '''
             }
         }
 
