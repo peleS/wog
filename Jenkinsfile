@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker build -t world_of_games .'
-            }
+                docker.build('world_of_games')
+              }
         }
         stage('Run') {
             steps {
