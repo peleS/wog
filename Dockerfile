@@ -21,12 +21,10 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) &
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver
 
-# Copy application files
 COPY app.py .
 COPY Scores.txt ./Scores.txt
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the application port
 EXPOSE 8777
 CMD ["python", "main_score.py"]
