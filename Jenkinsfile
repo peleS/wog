@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    environment {
+        PATH = "/snap/bin:${env.PATH}"
+    }
     stages {
         stage('Cleanup Old Containers') {
             steps {
@@ -15,15 +17,16 @@ pipeline {
 
         stage('Check Environment') {
             steps {
-                    sh 'env'  // Print all environment variables
+                    sh 'env'
                     }
         }
 
-        stage('Check Docker Compose Version') {
+        stage('Check Docker versions') {
            steps {
                    sh '''
-                   docker-compose --version
-                   which docker-compose || echo "docker-compose not found"
+                   docker info
+                   docker version
+                   docker compose version
                    '''
                     }
         }
