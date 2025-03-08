@@ -16,10 +16,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker-compose --verbose build
-                sudo docker logs world_games
+                set -x
+                docker-compose build
+                sudo docker logs world_games || true
                 '''
-
             }
         }
 
