@@ -13,6 +13,12 @@ pipeline {
             }
         }
 
+        stage('Check Environment') {
+            steps {
+                    sh 'env'  // Print all environment variables
+                    }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh '''
