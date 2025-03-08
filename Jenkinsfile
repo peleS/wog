@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/user/world_of_games.git'
-            }
-        }
         stage('Build') {
             steps {
                 sh 'docker build -t world_of_games .'
