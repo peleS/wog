@@ -8,6 +8,7 @@ pipeline {
         }
         stage('Run') {
             steps {
+                sh 'sudo docker rm -f world_games || true'
                 sh 'sudo docker run -d -p 8777:8777 --name world_games world_of_games'
             }
         }
