@@ -8,13 +8,13 @@ RUN apt-get update && apt-get install -y \
     default-jdk \
     && rm -rf /var/lib/apt/lists/*
 
-# install Chrome
+# Install Chrome
 RUN wget -qO- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-chrome.gpg
 RUN echo 'deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main' \
     | tee /etc/apt/sources.list.d/google-chrome.list
 RUN apt-get update && apt-get install -y google-chrome-stable
 
-# Install ChromeDriver with a more reliable method
+# Install ChromeDriver
 RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) && \
     wget -q "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION}" -O /tmp/chrome_driver_version && \
     CHROME_DRIVER_VERSION=$(cat /tmp/chrome_driver_version) && \
@@ -24,9 +24,13 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) &
     chmod +x /usr/local/bin/chromedriver && \
     rm -rf /tmp/chromedriver-linux64 /tmp/chromedriver.zip /tmp/chrome_driver_version
 
-COPY app.py .
-COPY Scores.txt ./Scores.txt
-COPY requirements.txt .
+# Copy all project files
+COPY . .
+
+# Ensure Scores.txt is included
+COPY Scores.txt /Scores.txt
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8777
