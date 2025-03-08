@@ -18,12 +18,18 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'python test/e2e.py'
+                sh '''
+                    # Option 1: Run test in a new container with network access to the running app
+                    # sudo docker run --network=host world_of_games python test/e2e.py
+
+                    # OR Option 2: Exec into the running container to run the test
+                    sudo docker exec world_games python test/e2e.py
+                '''
             }
         }
         stage('Finalize') {
             steps {
-                sh 'sudo docker stop world_games && docker rm world_games'
+                sh 'sudo docker stop world_games && sudo docker rm world_games'
                 sh 'sudo docker push user/world_of_games'
             }
         }
