@@ -29,7 +29,8 @@ pipeline {
             steps {
                 sh '''
                 set -x
-                docker-compose --verbose build
+                docker-compose --verbose build || { echo "docker-compose build failed"; exit 1; }
+                docker-compose ps
                 sudo docker logs world_games || true
                 '''
             }
