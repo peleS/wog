@@ -3,8 +3,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                docker.build('world_of_games')
-              }
+                script {
+                    docker.build('world_of_games')
+                }
+            }
         }
         stage('Run') {
             steps {
