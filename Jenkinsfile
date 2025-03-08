@@ -3,10 +3,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                script {
-                    sh 'sudo docker build -t world_of_games .'
-                }
+                sh 'sudo docker build -t world_of_games .'
             }
+        }
         stage('Run') {
             steps {
                 sh 'sudo docker run -d -p 8777:8777 --name world_games world_of_games'
@@ -14,7 +13,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'python e2e.py'
+                sh 'sudo python e2e.py'
             }
         }
         stage('Finalize') {
