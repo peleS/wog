@@ -8,12 +8,10 @@ services:
       - "8777:8777"
     volumes:
       - ./Scores.txt:/Scores.txt
-    depends_on:
-      - test
 
   test:
     build: .
     container_name: score_service_test
-    command: ["python", "e2e.py"]
     depends_on:
       - app
+    entrypoint: ["python", "e2e.py"]
