@@ -1,17 +1,16 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    container_name: score_service
+  flaskapp:
+    image: flaskapp
+    container_name: flask_app
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8777:8777"
     volumes:
-      - ./Scores.txt:/Scores.txt
-
-  test:
-    build: .
-    container_name: score_service_test
-    depends_on:
-      - app
-    entrypoint: ["python", "e2e.py"]
+      - ./Scores.txt:/app/Scores.txt
+    environment:
+      - FLASK_APP=main_score.py
+    restart: unless-stopped
