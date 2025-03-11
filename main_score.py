@@ -17,4 +17,4 @@ def score_server():
         return f"<html><head><title>Error</title></head><body><h1>ERROR: {e}</h1></body></html>"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=8777)
