@@ -1,34 +1,24 @@
-FROM python:3.9
+FROM selenium/standalone-chrome:latest
+
+# Install Python and pip
+USER root
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
 
 WORKDIR /app
 
-# Install apt dependencies
-RUN apt-get update && apt-get install -y \
-    wget unzip curl xvfb libxi6 libgconf-2-4 \
-    default-jdk \
-    && rm -rf /var/lib/apt/lists/*
+# Create and activate virtual environment
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
-# Install Chrome
-RUN wget -qO- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-chrome.gpg
-RUN echo 'deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main' \
-    | tee /etc/apt/sources.list.d/google-chrome.list
-RUN apt-get update && apt-get install -y google-chrome-stable
-
-# Install ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) && \
-    wget -q "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION}" -O /tmp/chrome_driver_version && \
-    CHROME_DRIVER_VERSION=$(cat /tmp/chrome_driver_version) && \
-    wget -q "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_DRIVER_VERSION}/linux64/chromedriver-linux64.zip" -O /tmp/chromedriver.zip && \
-    unzip /tmp/chromedriver.zip -d /tmp/ && \
-    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm -rf /tmp/chromedriver-linux64 /tmp/chromedriver.zip /tmp/chrome_driver_version
-
-# Optimization
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Copy only application files
 COPY . /app/
 
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+ENV FLASK_APP=main_score.py
+
+# Set correct permissions
+RUN chown -R seluser:seluser /app
+USER seluser
 
 EXPOSE 8777
-CMD ["python", "main_score.py"]
+CMD sh -c "python3 main_score.py & sleep 8 && python3 test/e2e.py || exit 1"
