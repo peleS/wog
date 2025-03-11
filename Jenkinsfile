@@ -1,69 +1,57 @@
 pipeline {
     agent any
+
     environment {
-        PATH = "/snap/bin:${env.PATH}"
+        DOCKER_IMAGE = 'flaskapp'
+        DOCKER_CONTAINER = 'flask_app'
+        DOCKERHUB_USER = 'pelesh'
+        DOCKERHUB_REPO = 'training'
     }
+
     stages {
-        stage('Cleanup Old Containers') {
+        stage('Checkout') {
             steps {
-                    sh '''
-                    if sudo docker ps -a --format "{{.Names}}" | grep -q "^world_games$"; then
-                    sudo docker rm -f world_games
-                    fi
-                    sudo docker ps -a
-                    '''
+                script {
+                    checkout scm
+                }
             }
         }
 
-        stage('Check Environment') {
+        stage('Build') {
             steps {
-                    sh 'env'
+                script {
+                    sh 'docker-compose build'
+                }
+            }
+        }
+
+        stage('Run') {
+            steps {
+                script {
+                    sh 'docker-compose up -d'
+                    sleep 10 // Give some time for the service to be fully up
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    def result = sh(script: 'python3 e2e.py', returnStatus: true)
+                    if (result != 0) {
+                        error('E2E test failed!')
                     }
-        }
-
-        stage('Check Docker versions') {
-           steps {
-                   sh '''
-                   docker info
-                   docker version
-                   docker compose version
-                   '''
-                    }
-        }
-
-        stage('Check Scores.txt File') {
-            steps {
-                    sh 'ls -l ./Scores.txt'  // Check if the file is in the workspace
-                    }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh '''
-                set -x
-                docker-compose --verbose build || { echo "docker-compose build failed"; exit 1; }
-                docker-compose ps
-                sudo docker logs world_games || true
-                '''
+                }
             }
         }
 
-        stage('Run Application') {
+        stage('Finalize') {
             steps {
-                sh 'docker-compose up -d app'
-                sh 'sleep 8'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'docker-compose run --rm test'
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                sh 'docker-compose down'
+                script {
+                    sh 'docker-compose down'
+                    sh "docker tag ${DOCKER_IMAGE} ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${BUILD_NUMBER}"
+                    sh "docker push ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${BUILD_NUMBER}"
+                }
             }
         }
     }
