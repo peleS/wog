@@ -24,10 +24,11 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) &
     chmod +x /usr/local/bin/chromedriver && \
     rm -rf /tmp/chromedriver-linux64 /tmp/chromedriver.zip /tmp/chrome_driver_version
 
-COPY . /app.
+# Optimization
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY . /app/
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8777
 CMD ["python", "main_score.py"]
