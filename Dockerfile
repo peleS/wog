@@ -2,7 +2,7 @@ FROM python:3.9
 
 WORKDIR /app
 
-# Install dependencies
+# Install apt dependencies
 RUN apt-get update && apt-get install -y \
     wget unzip curl xvfb libxi6 libgconf-2-4 \
     default-jdk \
@@ -24,11 +24,7 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) &
     chmod +x /usr/local/bin/chromedriver && \
     rm -rf /tmp/chromedriver-linux64 /tmp/chromedriver.zip /tmp/chrome_driver_version
 
-# Copy all project files
-COPY . .
-
-# Ensure Scores.txt is included
-COPY Scores.txt /Scores.txt
+COPY . /app.
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
