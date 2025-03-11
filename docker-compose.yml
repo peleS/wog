@@ -14,3 +14,15 @@ services:
     environment:
       - FLASK_APP=main_score.py
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8777"]
+      interval: 10s
+      retries: 5
+
+  e2e_test:
+    image: flaskapp
+    container_name: e2e_test
+    command: python3 test/e2e.py
+    depends_on:
+      flaskapp:
+        condition: service_healthy
