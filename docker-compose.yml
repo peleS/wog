@@ -10,7 +10,7 @@ services:
     ports:
       - "8777:8777"
     volumes:
-      - ./Scores.txt:/Scores.txt
+      - ./Scores.txt:/app/Scores.txt
     environment:
       - FLASK_APP=main_score.py
     restart: unless-stopped
